@@ -27,6 +27,7 @@ public class UserRestController {
 
 	private final UserService userService;
 	private final JwtUtil jwtUtil;
+//	BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder(); // spring security 비밀번호 암호화
 
 	public UserRestController(UserService userService, JwtUtil jwtUtil) {
 		this.userService = userService;

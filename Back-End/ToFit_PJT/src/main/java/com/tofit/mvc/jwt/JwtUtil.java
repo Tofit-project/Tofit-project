@@ -14,10 +14,15 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
+	
+	// 보안 키 설정
 	private String key = "SSAFY_NonMajor_JavaTrack_SecretKey";
 	private SecretKey secretKey = Keys.hmacShaKeyFor(key.getBytes(StandardCharsets.UTF_8));
 	
-	//토큰 생성시 다양한 데이터를 저장할 수 있음 (DTO or Map)
+	// 토큰 유효기간 (4시간)
+    private static final long TOKEN_VALID_TIME = 1000 * 60 * 60 * 4;
+	
+	// 토큰 생성
 	public String createToken(String userId) {
 		//유효기간 
 		Date exp = new Date(System.currentTimeMillis()+ 1000*60*60); //1시간
