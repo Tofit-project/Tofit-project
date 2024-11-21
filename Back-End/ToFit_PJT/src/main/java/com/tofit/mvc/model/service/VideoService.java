@@ -8,11 +8,11 @@ import com.tofit.mvc.model.dto.Video;
 
 public interface VideoService {
 
-	List<Video> getList();
-
 	List<Video> getRecomVideo(String userId);
 
 	List<SpecialistInfoView> search(SearchCondition condition);
+
+	Video getVideo(String videoId);
 
 
 }

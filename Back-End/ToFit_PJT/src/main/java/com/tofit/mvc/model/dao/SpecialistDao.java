@@ -7,8 +7,10 @@ import com.tofit.mvc.model.dto.SpecialistInfoView;
 
 public interface SpecialistDao {
 
+	// 전문가 조건(이름) 검색
 	List<SpecialistInfoView> selectByCondition(SearchCondition condition);
 
+	// 전문가 상세 조회
 	List<SpecialistInfoView> selectBySpecialistId(String specialistId);
 
 }

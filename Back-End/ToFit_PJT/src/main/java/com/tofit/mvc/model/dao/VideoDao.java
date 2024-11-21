@@ -8,13 +8,16 @@ import com.tofit.mvc.model.dto.Video;
 
 public interface VideoDao {
 
-	// 영상 전체 가져오기
-	List<Video> selectAll();
-
 	// 추천 영상 가져오기
 	List<Video> selectRecomVideo(String userId);
 
 	// 영상 조건 검색하기
 	List<SpecialistInfoView> selectByCondition(SearchCondition condition);
+
+	// 영상 상세 조회
+	Video selectVideo(String videoId);
+
+	// 영상 조회수 증가
+	void updateViewCnt(String videoId);
 
 }

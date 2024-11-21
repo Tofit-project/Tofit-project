@@ -19,12 +19,6 @@ public class VideoServiceImpl implements VideoService {
 		this.videoDao = videoDao;
 	}
 
-	// 영상 전체 조회
-	@Override
-	public List<Video> getList() {
-		return videoDao.selectAll();
-	}
-
 	// 추천 영상 조회
 	@Override
 	public List<Video> getRecomVideo(String userId) {
@@ -35,6 +29,13 @@ public class VideoServiceImpl implements VideoService {
 	@Override
 	public List<SpecialistInfoView> search(SearchCondition condition) {
 		return videoDao.selectByCondition(condition);
+	}
+
+	// 영상 상세 조회
+	@Override
+	public Video getVideo(String videoId) {
+		videoDao.updateViewCnt(videoId); // 조회수 증가
+		return videoDao.selectVideo(videoId);
 	}
 
 }

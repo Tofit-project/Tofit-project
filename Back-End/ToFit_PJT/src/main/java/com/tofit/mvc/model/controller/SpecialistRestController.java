@@ -24,7 +24,7 @@ public class SpecialistRestController {
 		this.specialistService = specialistService;
 	}
 	
-	// 전문가 조건 조회
+	// 전문가 조건(이름) 조회
 	@GetMapping()
 	public ResponseEntity<?> list(@ModelAttribute SearchCondition condition){
 		List<SpecialistInfoView> list = specialistService.search(condition);
@@ -36,7 +36,7 @@ public class SpecialistRestController {
 		
 	}
 	
-	// 전문가 상세 조회
+	// 전문가 상세 조회 (해당 전문가가 올린 모든 콘텐츠들)
 	@GetMapping("/{id}")
 	public ResponseEntity<?> detail(@PathVariable("id") String specialistId){
 		

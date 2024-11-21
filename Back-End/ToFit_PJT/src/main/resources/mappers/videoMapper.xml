@@ -58,4 +58,18 @@
         f.user_id = sagu.user_id;
 	</select>
 	
+	<!-- 영상 상세 조회 -->
+	<select id="selectVideo" parameterType="String" resultType="Video">
+		SELECT *
+		FROM VIDEO
+		WHERE video_id = #{videoId};
+	</select>
+	
+	<!-- 영상 조회수 증가 -->
+	<update id="updateViewCnt" parameterType="String">
+		UPDATE VIDEO
+		SET view_cnt = view_cnt+1
+		WHERE video_id = #{videoId};
+	</update>
+	
 </mapper>

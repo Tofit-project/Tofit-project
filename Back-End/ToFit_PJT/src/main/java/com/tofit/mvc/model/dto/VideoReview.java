@@ -9,6 +9,9 @@ public class VideoReview {
 	private String content;
 	private Date regDate;
 	
+	public VideoReview() {
+	}
+	
 	public VideoReview(int reviewId, String userId, String videoId, String content, Date regDate) {
 		super();
 		this.reviewId = reviewId;

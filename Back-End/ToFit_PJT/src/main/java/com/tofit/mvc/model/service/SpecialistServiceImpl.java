@@ -17,12 +17,14 @@ public class SpecialistServiceImpl implements SpecialistService{
 		this.specialistDao = specialistDao;
 	}
 
+	// 전문가 조건(이름) 검색
 	@Override
 	public List<SpecialistInfoView> search(SearchCondition condition) {
 		
 		return specialistDao.selectByCondition(condition);
 	}
 
+	// 전문가 상세 조회
 	@Override
 	public List<SpecialistInfoView> getDetail(String specialistId) {
 		return specialistDao.selectBySpecialistId(specialistId);
