@@ -11,7 +11,7 @@ public interface UserService {
 	public boolean checkUserId(String id);
 
 	// 프로필명 중복 확인
-	public boolean checkUserName(String name);
+	public boolean checkUserProfileName(String name);
 
 	// 로그인
 	public User loginUser(User user);

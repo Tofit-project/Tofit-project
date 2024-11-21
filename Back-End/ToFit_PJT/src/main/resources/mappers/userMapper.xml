@@ -12,13 +12,12 @@
 	</insert>
 	
 	<!-- 아이디 중복 확인 -->
-	public int selectUserIdCheck(String id);
-	<select id="selectUserIdCheck" parameterType="String" >
+	<select id="selectUserIdCheck" parameterType="String">
 		SELECT COUNT(*) FROM USER WHERE user_id = #{userId}
 	</select>
 	
 	<!-- 프로필명 중복 확인 -->	
-	<select id="selectUserNameCheck" parameterType="String">
+	<select id="selectUserProfileNameCheck" parameterType="String">
 		SELECT COUNT(*) FROM USER WHERE profile_name = #{profileName}
 	</select>
 
@@ -48,7 +47,6 @@
 	</update>
 	
 	<!-- 회원 탈퇴 -->
-	public int deleteUserOne(User user);
 	<delete id="deleteUserOne" parameterType="User">
 		DELETE FROM USER WHERE user_id = #{userId}
 	</delete>	

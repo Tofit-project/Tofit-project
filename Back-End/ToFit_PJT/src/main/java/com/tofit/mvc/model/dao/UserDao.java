@@ -11,7 +11,7 @@ public interface UserDao {
 	public int selectUserIdCheck(String id);
 	
 	// 프로필명 중복 확인
-	public int selectUserNameCheck(String name);
+	public int selectUserProfileNameCheck(String profileName);
 	
 	// 로그인
 	public User selectUserLogin(User user);

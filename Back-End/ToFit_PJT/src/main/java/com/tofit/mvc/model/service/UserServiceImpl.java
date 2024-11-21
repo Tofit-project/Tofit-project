@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public boolean checkUserName(String name) {
-		return userDao.selectUserNameCheck(name) == 1;
+	public boolean checkUserProfileName(String name) {
+		return userDao.selectUserProfileNameCheck(name) == 1;
 	}
 
 	@Override
