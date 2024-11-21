@@ -64,24 +64,24 @@ public class UserRestController {
 		}
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-		HttpStatus status = null;
-		Map<String, Object> result = new HashMap<>();
-		User loginUser = userService.login(user.getId(), user.getPassword());
-
-		System.out.println(loginUser);
-		if (loginUser != null) {
-			result.put("message", "login 성공");
-			// userId를 토큰 생성시 포함!!
-//			result.put("access-token", jwtUtil.createToken(loginUser.getName()));
-			// id도 같이 넘겨주면 번거로운 작업을 할 필요는 없어
-			status = HttpStatus.ACCEPTED;
-		} else {
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<>(result, status);
-	}
+//	@PostMapping("/login")
+//	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+//		HttpStatus status = null;
+//		Map<String, Object> result = new HashMap<>();
+//		User loginUser = userService.login(user.getId(), user.getPassword());
+//
+//		System.out.println(loginUser);
+//		if (loginUser != null) {
+//			result.put("message", "login 성공");
+//			// userId를 토큰 생성시 포함!!
+////			result.put("access-token", jwtUtil.createToken(loginUser.getName()));
+//			// id도 같이 넘겨주면 번거로운 작업을 할 필요는 없어
+//			status = HttpStatus.ACCEPTED;
+//		} else {
+//			status = HttpStatus.INTERNAL_SERVER_ERROR;
+//		}
+//		return new ResponseEntity<>(result, status);
+//	}
 
 	@PostMapping("/find-id")
 	public ResponseEntity<String> fintId(@RequestBody User user) {
