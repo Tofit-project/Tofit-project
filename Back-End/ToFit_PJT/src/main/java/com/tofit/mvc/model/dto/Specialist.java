@@ -2,14 +2,13 @@ package com.tofit.mvc.model.dto;
 
 public class Specialist {
 	private String specialistId;
-	private int cateCode;
+	private String goal;
 	private String hashtag;
 	private String profileImg;
 	
-	public Specialist(String specialistId, int cateCode, String hashtag, String profileImg) {
-		super();
+	public Specialist(String specialistId, String goal, String hashtag, String profileImg) {
 		this.specialistId = specialistId;
-		this.cateCode = cateCode;
+		this.goal = goal;
 		this.hashtag = hashtag;
 		this.profileImg = profileImg;
 	}
@@ -22,12 +21,12 @@ public class Specialist {
 		this.specialistId = specialistId;
 	}
 
-	public int getCateCode() {
-		return cateCode;
+	public String getGoal() {
+		return goal;
 	}
 
-	public void setCateCode(int cateCode) {
-		this.cateCode = cateCode;
+	public void setGoal(String goal) {
+		this.goal = goal;
 	}
 
 	public String getHashtag() {
@@ -48,8 +47,8 @@ public class Specialist {
 
 	@Override
 	public String toString() {
-		return "Specialist [specialistId=" + specialistId + ", cateCode=" + cateCode + ", hashtag=" + hashtag
-				+ ", profileImg=" + profileImg + "]";
+		return "Specialist [specialistId=" + specialistId + ", goal=" + goal + ", hashtag=" + hashtag + ", profileImg="
+				+ profileImg + "]";
 	}
 	
 	

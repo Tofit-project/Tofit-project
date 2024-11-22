@@ -4,10 +4,10 @@
 <mapper namespace="com.tofit.mvc.model.dao.SpecialistDao">
 
 	<!-- 전문가 조건(이름) 검색 기능 -->
-	<select id="selectByCondition" parameterType="SearchCondition" resultType="SpecialistInfoView">
-		SELECT *
+	<select id="selectByCondition" parameterType="SearchCondition" resultType="Specialist">
+		SELECT DISTINCT channel_name AS specialistId, goal, hashtag, profile_img
 		FROM SPECIALIST_INFO_VIEW
-		<if test="keyWord != null">
+		<if test="keyWord != ''">
 			WHERE CHANNEL_NAME LIKE concat('%', #{keyWord}, '%')
 		</if>
 	</select>

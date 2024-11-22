@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.tofit.mvc.model.dao.SpecialistDao;
 import com.tofit.mvc.model.dto.SearchCondition;
+import com.tofit.mvc.model.dto.Specialist;
 import com.tofit.mvc.model.dto.SpecialistInfoView;
 
 @Service
@@ -19,7 +20,7 @@ public class SpecialistServiceImpl implements SpecialistService{
 
 	// 전문가 조건(이름) 검색
 	@Override
-	public List<SpecialistInfoView> search(SearchCondition condition) {
+	public List<Specialist> search(SearchCondition condition) {
 		
 		return specialistDao.selectByCondition(condition);
 	}
