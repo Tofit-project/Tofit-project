@@ -25,10 +25,11 @@ public class JwtUtil {
     private static final long TOKEN_VALID_TIME = 1000 * 60 * 60 * 4;
 	
 	// 토큰 생성
-	public String createToken(String userId) {
+	public String createToken(String userId, String profileName) {
 		
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("userId", userId);
+		claims.put("profileName", profileName);
 		
 		return Jwts.builder()
 				.claims(claims) // 사용자 정보
@@ -38,16 +39,16 @@ public class JwtUtil {
 	}
 	
 	
-	// 수정필요!!!
-	
 	// 토큰 검증
-	private Jws<Claims> validate(String token){
+	private Jws<Claims> validateJwt(String token){
 		return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+		
 	}
 	
-	// 토큰에서 userId 추출
-	public String extractUserId(String token) {
-		Claims claims = validate(token).getPayload();
-		return claims.get("userId", String.class); 
+	// 토근 검증한 후 userId 추출
+	public String getUserIdFromToken(String token) {
+		Jws<Claims> jws = validateJwt(token);
+		Claims claims = jws.getPayload();
+		return claims.get("userId", String.class);
 	}
 }

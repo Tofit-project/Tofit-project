@@ -23,7 +23,7 @@
 
 	<!-- 로그인 -->	
 	<select id="selectUserLogin" parameterType="User" resultType="User">
-		SELECT * FROM USER WHERE user_id = #{userId} AND password = #{password}
+		SELECT * FROM USER WHERE user_id = #{userId} 
 	</select>
 	
 	<!-- 아이디 찾기 -->

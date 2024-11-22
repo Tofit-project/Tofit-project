@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,26 +28,15 @@ public class UserRestController {
 
 	private final UserService userService;
 	private final JwtUtil jwtUtil;
-//	BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder(); // spring security 비밀번호 암호화
+	private final BCryptPasswordEncoder bcpe;
 
-	public UserRestController(UserService userService, JwtUtil jwtUtil) {
+	public UserRestController(UserService userService, JwtUtil jwtUtil, BCryptPasswordEncoder bcpe) {
 		this.userService = userService;
 		this.jwtUtil = jwtUtil;
+		this.bcpe = bcpe;
 	}
 
-	@PostMapping("/signup")
-	public ResponseEntity<String> signUp(@RequestBody User user) {
-		try {
-			// 비밀번호 해싱 처리 해야함!!!
-			if (userService.registerUser(user)) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("User added successfully");
-			}
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add user");
-		} catch (Exception e) {
-			return exceptionHandling(e, "Failed to add user due to server error");
-		}
-	}
-
+	
 	@GetMapping("/id-check")
 	public ResponseEntity<Boolean> checkId(@RequestParam String userId) {
 		if (userService.checkUserId(userId)) {
@@ -56,6 +46,7 @@ public class UserRestController {
 		}
 	}
 
+	
 	@GetMapping("/name-check")
 	public ResponseEntity<Boolean> checkProfileName(@RequestParam String profileName) {
 		if (userService.checkUserProfileName(profileName)) {
@@ -65,35 +56,59 @@ public class UserRestController {
 		}
 	}
 
-//	@PostMapping("/login")
-//	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-//		HttpStatus status = null;
-//		Map<String, Object> result = new HashMap<>();
-//		User loginUser = userService.login(user.getId(), user.getPassword());
-//
-//		System.out.println(loginUser);
-//		if (loginUser != null) {
-//			result.put("message", "login 성공");
-//			// userId를 토큰 생성시 포함!!
-////			result.put("access-token", jwtUtil.createToken(loginUser.getName()));
-//			// id도 같이 넘겨주면 번거로운 작업을 할 필요는 없어
-//			status = HttpStatus.ACCEPTED;
-//		} else {
-//			status = HttpStatus.INTERNAL_SERVER_ERROR;
-//		}
-//		return new ResponseEntity<>(result, status);
-//	}
+	
+	@PostMapping("/signup")
+	public ResponseEntity<String> signUp(@RequestBody User user) {
+		try {
+			// 비밀번호 해싱 처리
+			user.setPassword(bcpe.encode(user.getPassword()));
 
+			if (userService.registerUser(user)) {
+				return ResponseEntity.status(HttpStatus.CREATED).body("사용자 추가 성공");
+			}
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용차 추가 실패");
+		} catch (Exception e) {
+			return exceptionHandling(e, "Failed to add user due to server error");
+		}
+	}
+
+	
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody User user) {
+		HttpStatus status = null;
+		Map<String, Object> result = new HashMap<>();
+
+		try {
+			// 해싱된 비밀번호를 비교할 User 객체를 가져옴
+			User loginUser = userService.loginUser(user);
+
+			if (loginUser != null && bcpe.matches(user.getPassword(), loginUser.getPassword())) {
+				String token = jwtUtil.createToken(loginUser.getUserId(), loginUser.getProfileName());
+				result.put("message", "login 성공");
+				result.put("access-token", token);
+				status = HttpStatus.ACCEPTED;
+			} else {
+				result.put("message", "login 실패 -> 잘못된 입력");
+				status = HttpStatus.UNAUTHORIZED;
+			}
+		} catch (Exception e) {
+			return exceptionHandling(e, "Failed to login due to server error");
+		}
+		return new ResponseEntity<>(result, status);
+	}
+
+	
 	@PostMapping("/find-id")
 	public ResponseEntity<String> fintId(@RequestBody User user) {
 		String userId = userService.findUserId(user);
 		if (userId != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(userId);
 		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User ID not found");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 ID 찾기 실패");
 		}
 	}
 
+	
 	@PutMapping("/reset-password")
 	public ResponseEntity<Boolean> resetPw(@RequestBody User user) {
 		// 비밀번호 재설정시에도 재설정하는 비밀번호 해싱처리 필요함!!!
@@ -104,34 +119,39 @@ public class UserRestController {
 		}
 	}
 
+	
 	@GetMapping()
 	public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authHeader) {
 		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
 		if (token != null) {
-//			String userId = jwtUtil.getUserIdFormToken(token);
-			String userId = "tester";
+			String userId = jwtUtil.getUserIdFromToken(token);
 
-			User user = userService.getUserInfo(userId);
-			if (user != null) {
-				return ResponseEntity.status(HttpStatus.OK).body(user);
+			
+			if (userId != null) {
+				User user = userService.getUserInfo(userId);
+				if(user != null) {
+					return ResponseEntity.status(HttpStatus.OK).body(user);
+				}else {
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자 정보 찾을 수 없음");
+				}
+				
 			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Info not found");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 JWT");
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization token is missing or invalid");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 없음");
 		}
 	}
-	
+
 	
 	@PutMapping()
 	public ResponseEntity<?> udtUserInfo(@RequestHeader("Authorization") String authHeader, @RequestBody User user) {
 		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
 		if (token != null) {
-//			String userId = jwtUtil.getUserIdFormToken(token);
-			String userId = "tester";
-			user.setUserId(userId); 
+			String userId = jwtUtil.getUserIdFromToken(token);
+			user.setUserId(userId);
 
 			if (userService.updateUserInfo(user)) {
 				return ResponseEntity.status(HttpStatus.OK).body(true);
@@ -139,17 +159,17 @@ public class UserRestController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization token is missing or invalid");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 없음");
 		}
 	}
+
 	
 	@DeleteMapping()
 	public ResponseEntity<?> removeUserAccount(@RequestHeader("Authorization") String authHeader) {
 		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
 		if (token != null) {
-//			String userId = jwtUtil.getUserIdFormToken(token);
-			String userId = "tester";
+			String userId = jwtUtil.getUserIdFromToken(token);
 
 			if (userService.deleteUserAccount(userId)) {
 				return ResponseEntity.status(HttpStatus.OK).body(true);
@@ -157,7 +177,7 @@ public class UserRestController {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
 			}
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization token is missing or invalid");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 없음");
 		}
 	}
 

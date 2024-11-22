@@ -1,18 +1,16 @@
 <template>
-  <div>
-    <Header/>
-    <RouterView />
-    <Footer/>
+  <div class="d-flex flex-column min-vh-100">
+    <Header />
+    <div class="flex-grow-1">
+      <RouterView />
+    </div>
+    <Footer />
   </div>
 </template>
 
 <script setup>
-import Header from './components/common/Header.vue';
-import Main from './components/common/Main.vue';
-import Footer from './components/common/Footer.vue';
-
+import Header from "./components/common/Header.vue";
+import Footer from "./components/common/Footer.vue";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

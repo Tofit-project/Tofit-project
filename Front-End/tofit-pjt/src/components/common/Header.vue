@@ -3,7 +3,9 @@
     <nav class="header-nav">
       <div class="logo">
         <h1>
-          <RouterLink :to="{ name: 'videoList' }" class="logo-link">ToFit</RouterLink>
+          <RouterLink :to="{ name: 'videoList' }" class="logo-link"
+            >ToFit</RouterLink
+          >
         </h1>
       </div>
       <ul class="nav-links">
@@ -17,14 +19,36 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="user-menu">
-        <button class="login-btn">Login</button>
-        <button class="signup-btn">Sign Up</button>
+        <!-- 로그인 상태 -->
+        <div v-if="userStore.loginUserProfileName">
+          <span>{{ userStore.loginUserProfileName }}님 환영합니다.</span>
+          <button @click="logout">로그아웃</button>
+        </div>
+        <!-- 로그인 상태가 아닐 때 -->
+        <div v-else>
+          <RouterLink :to="{ name: 'login' }">
+            <button class="login-btn">로그인</button>
+          </RouterLink>
+          <button class="signup-btn">회원가입</button>
+        </div>
       </div>
     </nav>
   </header>
 </template>
 
 <script setup>
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+
+const userStore = useUserStore();
+
+onMounted(() => {
+  userStore.checkLoginStatus();
+});
+
+const logout = function () {
+  userStore.userLogout();
+};
 </script>
 
 <style scoped>
@@ -32,7 +56,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #FF848F;
+  background-color: #ff848f;
   color: white;
   padding: 0 2rem;
   height: 80px;
@@ -69,7 +93,7 @@
 }
 
 .nav-links li a:hover {
-  color: #FFEBF1;
+  color: #ffebf1;
   font-weight: 700;
   /* 호버 시 글씨 두께 증가 */
 }
@@ -82,11 +106,11 @@
 
 .login-btn,
 .signup-btn {
-  background-color: #FFD6DC;
+  background-color: #ffd6dc;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  color: #5D1A24;
+  color: #5d1a24;
   font-weight: bold;
   font-size: 0.9rem;
   cursor: pointer;
@@ -95,7 +119,7 @@
 
 .login-btn:hover,
 .signup-btn:hover {
-  background-color: #FFB3C1;
+  background-color: #ffb3c1;
   transform: scale(1.05);
 }
 </style>

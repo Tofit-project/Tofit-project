@@ -3,5 +3,29 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tofit.mvc.model.dao.FollowsDao">
 
-	
+    <!-- 팔로우 등록 -->
+    <insert id="insertFollow" parameterType="Follows">
+        INSERT INTO Follows (follower_id, followed_id)
+        VALUES (#{followerId}, #{followedId})
+    </insert>
+
+    <!-- 팔로우 삭제 -->
+    <delete id="deleteFollow" parameterType="Follows">
+        DELETE FROM Follows
+        WHERE follower_id = #{followerId} AND followed_id = #{followedId}
+    </delete>
+
+    <!-- 팔로우 알림 상태 변경 (checked 0 -> 1) -->
+    <update id="updateFollowCheckStatus" parameterType="Follows">
+        UPDATE Follows
+        SET checked = 1
+        WHERE follower_id = #{followerId} AND followed_id = #{followedId}
+    </update>
+    
+    <!-- 사용자 팔로우 전체 조회 -->
+    <select id="selsectFollowList" parameterType="String">
+    	SELECT * FROM Follows
+    	WHERE follower_id = #{follower_id}
+    </select>
+
 </mapper>
