@@ -1,0 +1,8 @@
+package com.tofit.mvc.model.service;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class FeedServiceImpl {
+
+}

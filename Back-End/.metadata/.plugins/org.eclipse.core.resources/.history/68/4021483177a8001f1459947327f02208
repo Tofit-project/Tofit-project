@@ -1,0 +1,17 @@
+package com.tofit.mvc.model.service;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tofit.mvc.model.dao.FeedDao;
+
+@RestController
+public class FeedServiceImpl {
+	
+	private final FeedDao feedDao;
+
+	public FeedServiceImpl(FeedDao feedDao) {
+		this.feedDao = feedDao;
+	}
+	
+	
+}

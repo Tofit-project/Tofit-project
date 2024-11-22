@@ -1,0 +1,14 @@
+package com.tofit.mvc.model.dao;
+
+public interface FeedImageDao {
+	
+	// 피드 이미지 삽입
+    public int insertFeedImages(List<FeedImage> feedImages);
+
+    // 피드 이미지 조회
+    public List<FeedImage> selectFeedImagesByFeedId(int feedId);
+
+    // 피드 이미지 삭제
+    public int deleteFeedImage(int imageId);
+
+}

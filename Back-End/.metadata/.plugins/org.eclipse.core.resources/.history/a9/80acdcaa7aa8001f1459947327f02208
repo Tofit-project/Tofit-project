@@ -1,0 +1,61 @@
+package com.tofit.mvc.model.service;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tofit.mvc.model.dao.FeedDao;
+import com.tofit.mvc.model.dao.FeedImageDao;
+import com.tofit.mvc.model.dto.Feed;
+
+@RestController
+public class FeedServiceImpl implements FeedService{
+	
+	private final FeedDao feedDao;
+	private final FeedImageDao feedImageDao;
+
+	public FeedServiceImpl(FeedDao feedDao, FeedImageDao feedImageDao) {
+		this.feedDao = feedDao;
+		this.feedImageDao = feedImageDao;
+	}
+
+	@Override
+	public boolean registerFeed(Feed feed, List<FeedImage> feedImages) {
+		 // Feed 등록
+        boolean isFeedInserted = feedDao.insertFeedOne(feed) == 1;
+
+        if (isFeedInserted) {
+            // feedId가 생성된 후 feedImages에 feedId를 설정하여 이미지 등록
+            for (FeedImage feedImage : feedImages) {
+                feedImage.setFeedId(feed.getFeedId()); // 생성된 feedId를 FeedImage에 설정
+            }
+
+            // FeedImage 등록
+            int insertedCount = feedImageDao.insertFeedImages(feedImages);
+            return insertedCount == feedImages.size();
+        }
+        return false;
+	}
+
+	@Override
+	public List<Feed> getFeedList() {
+		return feedDao.selectFeedList();
+	}
+
+	@Override
+	public Feed getFeedInfo(int feedId) {
+		return feedDao.selectFeedOne(feedId);
+	}
+
+	@Override
+	public boolean updateFeedInfo(int feedId) {
+		return feedDao.updateFeedOne(feedId) == 1;
+	}
+
+	@Override
+	public boolean deleteFeedInfo(int feedId) {
+		return feedDao.deleteFeedOne(feedId) == 1;
+	}
+	
+	
+}

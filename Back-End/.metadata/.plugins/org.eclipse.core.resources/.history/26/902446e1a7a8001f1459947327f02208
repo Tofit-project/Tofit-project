@@ -1,0 +1,11 @@
+package com.tofit.mvc.model.dao;
+
+public interface FollowsDao {
+	
+	// 팔로우 등록
+	
+	// 팔로우 삭제
+	
+	// 팔로우 알림 상태 변경
+
+}

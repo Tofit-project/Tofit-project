@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tofit.mvc.model.dao.FavoritesDao">
+
+	<!-- collection : 전달받은 인자 / item : 전달 받은 인자 값을 해당 alias명으로 대체 -->
+	<insert id="insertFeedImages" parameterType="java.util.List">
+		INSERT INTO FEEDIMAGE(feed_id, img)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(#{item.feedId}, #{item.img})
+		</foreach>
+	</insert>
+
+	<select id="selectAllFeedImages" resultType="FeedImage">
+		SELECT * FROM
+		FEEDIMAGE
+	</select>
+
+	<select id="selectFeedImagesByFeedId" parameterType="int"
+		resultType="FeedImage">
+		SELECT * FROM FEEDIMAGE WHERE feed_id = #{feedId}
+	</select>
+
+	<delete id="deleteFeedImages" parameterType="java.util.List">
+		DELETE FROM FEEDIMAGE
+		WHERE image_id = #{imageId}
+	</delete>
+</mapper>

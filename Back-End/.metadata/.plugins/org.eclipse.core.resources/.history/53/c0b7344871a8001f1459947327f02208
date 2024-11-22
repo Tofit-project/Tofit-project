@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tofit.mvc.model.dao.FeedImageDao">
+
+	<!-- 피드 작성 -->
+	<insert id="insertFeedOne" parameterType="Feed">
+		INSERT INTO FEED(user_id, content)
+		VALUES(#{userId}, #{content})
+	</insert>
+	
+	<!-- 피드 전체 조회 -->
+	public List<Feed> selectFeedList();
+	<select id="selectFeedList" resultType="Feed">
+	</select>
+	
+	<!-- 피드 상세 조회 -->
+	public Feed selectFeedOne();
+	
+	<!-- 피드 수정 -->
+	public int updateFeedOne();
+	
+	<!-- 피드 삭제 -->
+	public int deleteFeedOne(int feedId);
+	
+	
+</mapper>

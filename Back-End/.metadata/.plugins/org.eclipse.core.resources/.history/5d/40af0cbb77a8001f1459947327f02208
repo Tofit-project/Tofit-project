@@ -1,0 +1,47 @@
+package com.tofit.mvc.model.service;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tofit.mvc.model.dao.FeedDao;
+import com.tofit.mvc.model.dto.Feed;
+
+@RestController
+public class FeedServiceImpl implements FeedService{
+	
+	private final FeedDao feedDao;
+
+	public FeedServiceImpl(FeedDao feedDao) {
+		this.feedDao = feedDao;
+	}
+
+	@Override
+	public boolean registerFeed(Feed feed) {
+		return feedDao.insertFeedOne(feed) == 1;
+	}
+
+	@Override
+	public List<Feed> getFeedList() {
+		return feedDao.selectFeedList();
+	}
+
+	@Override
+	public Feed getFeedInfo(int feedId) {
+		return feedDao.selectFeedOne(feedId);
+	}
+
+	@Override
+	public boolean updateFeedInfo(int feedId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean deleteFeedInfo(int feedId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tofit.mvc.model.dao.FavoritesDao">
+	
+	<insert id="insertFeedImages" parameterType="FeedImage">
+		INSERT INTO FEEDIMAGE(feed_id, img)
+		VALUES (#{feedId}, #{img})
+	</insert>
+	
+	<select id="selectFeedImagesByFeedId" parameterType="int" resultType="FeedImage">
+		 SELECT * FROM FEEDIMAGE WHERE feed_id = #{feedId} 
+	</select>
+	
+	<select id="selectAllFeedImages" resultType="FeedImage">
+		SELECT * FROM FEEDIMAGE
+	</select>
+	
+	<delete id="deleteFeedImage" parameterType="int">
+		DELETE FROM FEEDIMAGE WHERE image_id = #{imageId}
+	</delete>
+</mapper>
