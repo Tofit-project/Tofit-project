@@ -3,20 +3,20 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tofit.mvc.model.dao.SpecialistDao">
 
-	<!-- 전문가 조건(이름) 검색 기능 -->
-	<select id="selectByCondition" parameterType="SearchCondition" resultType="Specialist">
-		SELECT DISTINCT channel_name AS specialistId, goal, hashtag, profile_img
-		FROM SPECIALIST_INFO_VIEW
-		<if test="keyWord != ''">
-			WHERE CHANNEL_NAME LIKE concat('%', #{keyWord}, '%')
-		</if>
-	</select>
-	
-	<!-- 전문가 상세 조회 -->
-	<select id="selectBySpecialistId" parameterType="String" resultType="SpecialistInfoView">
-		SELECT *
-		FROM SPECIALIST_INFO_VIEW
-		WHERE CHANNEL_NAME = #{specialistId}
-	</select>
-	
+    <!-- 전문가 조건(이름) 검색 기능 -->
+    <select id="selectByCondition" parameterType="SearchCondition" resultType="Specialist">
+        SELECT DISTINCT channel_name AS specialistId, goal, hashtag, profile_img
+        FROM SPECIALIST_INFO_VIEW
+        <if test="keyWord != ''">
+            WHERE CHANNEL_NAME LIKE concat('%', #{keyWord}, '%')
+        </if>
+    </select>
+    
+    <!-- 전문가 상세 조회 -->
+    <select id="selectBySpecialistId" parameterType="String" resultType="SpecialistInfoView">
+        SELECT *
+        FROM SPECIALIST_INFO_VIEW
+        WHERE CHANNEL_NAME = #{specialistId}
+    </select>
+    
 </mapper>

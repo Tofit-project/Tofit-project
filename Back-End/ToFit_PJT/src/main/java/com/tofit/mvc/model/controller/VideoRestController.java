@@ -5,6 +5,7 @@ import java.util.List;
 //import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.tofit.mvc.model.service.VideoService;
 
 @RestController
 @RequestMapping("/tofit/video")
+@CrossOrigin("*")
 public class VideoRestController {
 	
 	private final VideoService videoService;
