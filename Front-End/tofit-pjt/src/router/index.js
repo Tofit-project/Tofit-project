@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SpecialistView from '@/views/SpecialistView.vue'
+import VideoList from '@/components/video/VideoList.vue'
+import VideoDetail from '@/components/video/VideoDetail.vue'
+import VideoReviewList from '@/components/review/VideoReviewList.vue'
+import SpecialistList from '@/components/specialist/SpecialistList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,11 +13,40 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      children : [
+        {
+          path: "",
+          name: 'videoList',
+          component: VideoList,
+          children: [
+          ]
+        },
+        {
+          path: ":videoId",
+          name: 'videoDetail',
+          component: VideoDetail,
+          props: true,
+          children: [
+            {
+              path: "",
+              name: 'videoReviewList',
+              component: VideoReviewList,
+            }
+          ]
+        },
+      ]
     },
     {
-      path: '/specialist',
+      path: '/instructor',
       name: 'specialist',
       component: SpecialistView,
+      children: [
+        {
+          path: "",
+          name: 'specialistList',
+          component: SpecialistList,
+        }
+      ]
     },
   ],
 })

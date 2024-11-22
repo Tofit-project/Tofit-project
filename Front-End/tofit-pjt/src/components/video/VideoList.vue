@@ -4,14 +4,16 @@
         <h4>추천 운동 목록</h4>
         <div class="card-container">
           <div class="card" v-for="(video, index) in store.recomVideoList" :key="index">
+            <RouterLink :to="`/${video.videoId}`" class="card-link">
             <img :src="video.thumbnail" alt="thumbnail" class="thumbnail" />
             <div class="card-content">
-              <img :src="video.instructorImage" alt="instructor" class="instructor-img" />
+              <img :src="video.instructorImage" alt="profile" class="instructor-img" />
               <div class="info">
-                <h5 class="title">{{ video.title }}</h5>
-                <p class="instructor">{{ video.instructor }}</p>
+                <h5 class="title">{{ decode(video.title) }}</h5>
+                <p class="instructor">{{ decode(video.channelName) }}</p>
               </div>
             </div>
+            </RouterLink>
           </div>
         </div>
       </section>
@@ -21,11 +23,12 @@
         <div class="search-filter">
           <input
             type="text"
-            v-model="searchQuery"
-            placeholder="운동 제목을 검색하세요"
+            v-model="searchInfo.keyWord"
+            placeholder="영상제목 또는 강사명을 입력해주세요"
             class="search-bar"
           />
-          <button class="search-btn">검색</button>
+          <button class="search-btn"
+          @click="searchVideoList">검색</button>
         </div>
         <div class="filter-buttons">
           <button
@@ -40,14 +43,16 @@
         </div>
         <div class="card-container">
           <div class="card" v-for="(video, index) in filteredVideos" :key="index">
+            <RouterLink :to="`/${video.videoId}`" class="card-link">
             <img :src="video.thumbnail" alt="thumbnail" class="thumbnail" />
             <div class="card-content">
               <img :src="video.instructorImage" alt="instructor" class="instructor-img" />
               <div class="info">
-                <h5 class="title">{{ video.title }}</h5>
-                <p class="instructor">{{ video.instructor }}</p>
+                <h5 class="title">{{ decode(video.title) }}</h5>
+                <p class="instructor">{{ decode(video.channelName) }}</p>
               </div>
             </div>
+            </RouterLink>
           </div>
         </div>
       </section>
@@ -59,32 +64,42 @@
   import { useVideoStore } from '@/stores/video';
   
   const store = useVideoStore();
-  const searchQuery = ref('');
+
+  const searchInfo = ref({
+    keyWord: '',
+  });
+
   const activeFilter = ref('');
   const filters = ['다이어트', '근력강화', '체형교정', '스트레칭', '명상', '식단'];
-  
-  const allVideos = computed(() => store.allVideos);
-  
-  const filteredVideos = computed(() => {
-    let videos = allVideos.value;
-    if (activeFilter.value) {
-      videos = videos.filter((video) => video.category === activeFilter.value);
+
+  const searchVideoList = function(){
+    store.searchVideoList(searchInfo.value);
+  }
+
+  const filteredVideos = computed(()=> {
+    let videos = store.videoList;
+
+    if(activeFilter.value) {
+      videos = videos.filter(video => video.goal === activeFilter.value)
     }
-    if (searchQuery.value) {
-      videos = videos.filter((video) =>
-        video.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-      );
-    }
+
     return videos;
-  });
-  
-  const applyFilter = (filter) => {
-    activeFilter.value = activeFilter.value === filter ? '' : filter;
-  };
+  })
+
+  // 필터 버튼 클릭 핸들러
+const applyFilter = (filter) => {
+  activeFilter.value = activeFilter.value === filter ? '' : filter; // 동일 필터 클릭 시 해제
+};
+
+// HTML 엔티티 변환 출력
+const decode = function(encodedStr){
+    const doc = new DOMParser().parseFromString(encodedStr, 'text/html');
+    return doc.documentElement.textContent;
+}
   
   onMounted(() => {
     store.getRecomVideoList();
-    store.getAllVideoList();
+    searchVideoList();
   });
   </script>
   
@@ -111,6 +126,18 @@
     width: calc(33% - 1rem);
     overflow: hidden;
   }
+
+  /* 카드 호버 효과 */
+.card:hover {
+  transform: scale(1.05); /* 확대 효과 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* 더 강한 그림자 */
+}
+
+/* RouterLink 기본 스타일 제거 */
+.card-link {
+  text-decoration: none; /* 하이퍼링크 밑줄 제거 */
+  color: inherit; /* 텍스트 색상 유지 */
+}
   
   .thumbnail {
     width: 100%;
@@ -168,6 +195,10 @@
     border-radius: 4px;
     cursor: pointer;
   }
+
+  .search-btn:hover {
+  background-color: #e63946; /* 더 짙은 색상 */
+}
   
   .filter-buttons {
     display: flex;

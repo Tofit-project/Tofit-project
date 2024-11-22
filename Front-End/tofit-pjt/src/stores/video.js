@@ -12,7 +12,6 @@ export const useVideoStore = defineStore('video', () => {
     axios({
       url: REST_API_URL+'/recom/'+'user2',
       method: 'GET',
-      params: {"keyWord" : "땅"}
     })
     .then((response)=>{
       recomVideoList.value = response.data;
@@ -20,14 +19,29 @@ export const useVideoStore = defineStore('video', () => {
     })
   };
 
-  // 전체 영상 목록
+  // 전체 영상 목록 (검색어 기반)
   const videoList = ref([]);
-  const getVideoList = function(){
+  const searchVideoList = function(condition){
     axios({
       url: REST_API_URL,
       method: 'GET',
+      params : condition
     })
-  }
+    .then((response)=>{
+      videoList.value = response.data;
+    })
+  };
 
-  return { recomVideoList, getRecomVideoList, videoList, }
+
+  // 영상 상세보기
+  const video = ref({});
+
+  const getVideo = function(videoId){
+    axios.get(`${REST_API_URL}/${videoId}`)
+    .then((response)=>{
+      video.value = response.data;
+    })
+  };
+
+  return { recomVideoList, getRecomVideoList, videoList, searchVideoList, video, getVideo}
 })

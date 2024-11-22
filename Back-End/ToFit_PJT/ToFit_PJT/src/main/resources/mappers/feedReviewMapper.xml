@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tofit.mvc.model.dao.FeedReviewDao">
+
+	<!-- 피드 댓글 전체 조회 -->
+	<select id="selectAll" parameterType="int" resultType="FeedReview">
+		SELECT *
+		FROM FEEDREVIEW
+		WHERE FEED_ID = #{feedId}
+		ORDER BY REVIEW_ID DESC;
+	</select>
+	
+	<!-- 피드 댓글 등록 -->
+	<insert id="insertReview" parameterType="FeedReview">
+		INSERT INTO FEEDREVIEW (user_id, feed_id, content)
+		VALUES (#{userId}, #{feedId}, #{content});
+	</insert>
+	
+	<!-- 피드 댓글 수정 -->
+	<update id="updateReview" parameterType="FeedReview">
+		UPDATE FEEDREVIEW
+		SET content = #{content}
+		WHERE review_id = #{reviewId};
+	</update>
+	
+	<!-- 피드 댓글 삭제 -->
+	<delete id="deleteReview" parameterType="int">
+		DELETE FROM FEEDREVIEW
+		WHERE review_id = #{reviewId};
+	</delete>
+</mapper>
