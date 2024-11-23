@@ -32,93 +32,99 @@ public class FollowsRestController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> follow(@RequestParam("followedId") String followedId, @RequestHeader("Authorization") String authHeader) {
+	public ResponseEntity<String> follow(@RequestParam("followedId") String followedId,
+	        @RequestHeader("Authorization") String authHeader) {
 	    String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 	    String userId = null;
 
 	    if (token != null) {
 	        userId = jwtUtil.getUserIdFromToken(token);
-	    }
+	        if (userId != null) {
+	            Follows follows = new Follows();
+	            follows.setFollowerId(userId);
+	            follows.setFollowedId(followedId);
 
-	    if (userId != null) {
-	        Follows follows = new Follows();
-	        follows.setFollowerId(userId);
-	        follows.setFollowedId(followedId);
-
-	        if (followsService.registerFollow(follows)) {
-	            return ResponseEntity.status(HttpStatus.CREATED).body("팔로우 등록 성공");
+	            if (followsService.registerFollow(follows)) {
+	                return ResponseEntity.status(HttpStatus.CREATED).body("팔로우 등록 성공");
+	            } else {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("팔로우 등록 실패");
+	            }
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 JWT");
 	        }
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("jwt 없음");
 	    }
-
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("팔로우 등록 실패");
 	}
 
+
 	@DeleteMapping
-	public ResponseEntity<String> followCancle(@RequestParam("followedId") String followedId, @RequestHeader("Authorization") String authHeader) {
-	    String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
-	    String userId = null;
+	public ResponseEntity<String> followCancle(@RequestParam("followedId") String followedId,
+			@RequestHeader("Authorization") String authHeader) {
+		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 
-	    if (token != null) {
-	        userId = jwtUtil.getUserIdFromToken(token);
+		if (token == null) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("jwt 없음");
+	    }
+		
+		String userId = jwtUtil.getUserIdFromToken(token);
+	    if (userId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 JWT");
+	    }
+		
+	    Follows follows = new Follows();
+	    follows.setFollowerId(userId);
+	    follows.setFollowedId(followedId);
+		
+	    if (!followsService.removeFollow(follows)) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("팔로우 삭제 실패");
 	    }
 
-	    if (userId != null) {
-	        Follows follows = new Follows();
-	        follows.setFollowerId(userId);
-	        follows.setFollowedId(followedId);
-
-	        if (followsService.removeFollow(follows)) {
-	            return ResponseEntity.status(HttpStatus.OK).body("팔로우 삭제 성공");
-	        }
-	    }
-
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("팔로우 삭제 실패");
+		return ResponseEntity.status(HttpStatus.OK).body("팔로우 삭제 성공");
 	}
 
 	@PutMapping("/check-status")
-	public ResponseEntity<String> followChecked(@RequestParam("followedId") String followedId, @RequestHeader("Authorization") String authHeader) {
-	    String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
-	    String userId = null;
+	public ResponseEntity<String> followChecked(@RequestParam("followedId") String followedId,
+			@RequestHeader("Authorization") String authHeader) {
+		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
+		String userId = null;
 
-	    if (token != null) {
-	        userId = jwtUtil.getUserIdFromToken(token);
-	    }
+		if (token != null) {
+			userId = jwtUtil.getUserIdFromToken(token);
+		}
 
-	    if (userId != null) {
-	        Follows follows = new Follows();
-	        follows.setFollowerId(userId);
-	        follows.setFollowedId(followedId);
+		if (userId != null) {
+			Follows follows = new Follows();
+			follows.setFollowerId(userId);
+			follows.setFollowedId(followedId);
 
-	        if (followsService.changeFollowCheckStatus(follows)) {
-	            return ResponseEntity.status(HttpStatus.OK).body("알림 상태 변경 성공");
-	        }
-	    }
+			if (followsService.changeFollowCheckStatus(follows)) {
+				return ResponseEntity.status(HttpStatus.OK).body("알림 상태 변경 성공");
+			}
+		}
 
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알림 상태 변경 실패");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("알림 상태 변경 실패");
 	}
-	
-	
+
 	@GetMapping
 	public ResponseEntity<List<Follows>> getFollowsByUserId(@RequestHeader("Authorization") String authHeader) {
-	    String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
-	    String userId = null;
-	    
-	    if (token != null) {
-	        userId = jwtUtil.getUserIdFromToken(token);
-	    }
+		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
+		String userId = null;
 
-	    if (userId != null) {
-	        List<Follows> followsList = followsService.getFollowList(userId);
-	        
-	        if (followsList != null && followsList.size() > 0) {
-	        	return ResponseEntity.status(HttpStatus.OK).body(followsList);
-	        }
-	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(followsList);
-	    }
+		if (token != null) {
+			userId = jwtUtil.getUserIdFromToken(token);
+		}
 
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		if (userId != null) {
+			List<Follows> followsList = followsService.getFollowList(userId);
+
+			if (followsList != null && followsList.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(followsList);
+			}
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(followsList);
+		}
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	}
-
-	
 
 }
