@@ -11,6 +11,15 @@
 <script setup>
 import Header from "./components/common/Header.vue";
 import Footer from "./components/common/Footer.vue";
+
+import { onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+
+const userStore = useUserStore();
+
+onMounted(() => {
+  userStore.checkLoginStatus();
+});
 </script>
 
 <style scoped></style>

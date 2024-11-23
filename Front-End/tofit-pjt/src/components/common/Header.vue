@@ -42,9 +42,9 @@ import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
 
-onMounted(() => {
-  userStore.checkLoginStatus();
-});
+// onMounted(() => {
+//   userStore.checkLoginStatus();
+// });
 
 const logout = function () {
   userStore.userLogout();

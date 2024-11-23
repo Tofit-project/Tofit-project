@@ -1,8 +1,18 @@
 <template>
   <div style="margin: 20px">
     <h3>로그인</h3>
-    <input type="text" placeholder="ID입력" v-model.trim="id" />
-    <input type="password" placeholder="PW입력" v-model.trim="password" />
+    <input
+      type="text"
+      placeholder="ID입력"
+      v-model.trim="id"
+      @keyup.enter="login"
+    />
+    <input
+      type="password"
+      placeholder="PW입력"
+      v-model.trim="password"
+      @keyup.enter="login"
+    />
     <button @click="login">로그인</button>
   </div>
 </template>
