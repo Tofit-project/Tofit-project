@@ -11,7 +11,7 @@ import com.tofit.mvc.jwt.JwtUtil;
 import com.tofit.mvc.model.service.FeedService;
 
 @RestController
-@RequestMapping("/feeds")
+@RequestMapping("tofit/feeds")
 @CrossOrigin("*")
 public class FeedRestController {
 

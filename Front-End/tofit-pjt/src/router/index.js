@@ -6,6 +6,7 @@ import VideoDetail from "@/components/video/VideoDetail.vue";
 import VideoReviewList from "@/components/review/VideoReviewList.vue";
 import SpecialistList from "@/components/specialist/SpecialistList.vue";
 import UserLogin from "@/components/user/UserLogin.vue";
+import UserSignup from "@/components/user/UserSignup.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +53,11 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: UserLogin,
+    },
+    {
+      path: "/signup",
+      name: "signup",
+      component: UserSignup,
     },
   ],
 });

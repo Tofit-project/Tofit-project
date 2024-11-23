@@ -21,7 +21,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable) // JWT 방식 사용하므로 비활성화
 				.formLogin(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/", "/users/signup", "/users/login", "/tofit/**", "/follows/**").permitAll()
+				.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/", "/tofit/users/signup", "/tofit/users/login", "/tofit/**", "/follows/**").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		return http.build();

@@ -20,7 +20,13 @@
       </ul>
       <div class="user-menu">
         <!-- 로그인 상태 -->
-        <div v-if="userStore.loginUserProfileName">
+        <div v-if="userStore.loginUserProfileName" class="user-info">
+          <div v-if="userStore.loginUserProfileImage">
+            <img :src="userStore.loginUserProfileImage" class="profile-image" />
+          </div>
+          <div v-else>
+            <img src="/images/default_profile.png" class="profile-image" />
+          </div>
           <span>{{ userStore.loginUserProfileName }}님 환영합니다.</span>
           <button @click="logout">로그아웃</button>
         </div>
@@ -29,7 +35,9 @@
           <RouterLink :to="{ name: 'login' }">
             <button class="login-btn">로그인</button>
           </RouterLink>
-          <button class="signup-btn">회원가입</button>
+          <RouterLink :to="{ name: 'signup' }">
+            <button class="signup-btn">회원가입</button>
+          </RouterLink>
         </div>
       </div>
     </nav>
@@ -41,10 +49,6 @@ import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
-
-// onMounted(() => {
-//   userStore.checkLoginStatus();
-// });
 
 const logout = function () {
   userStore.userLogout();
@@ -68,12 +72,9 @@ const logout = function () {
   font-weight: bold;
 }
 
-/* RouterLink 기본 스타일 제거 */
 .logo-link {
   text-decoration: none;
-  /* 하이퍼링크 밑줄 제거 */
   color: inherit;
-  /* 텍스트 색상 유지 */
 }
 
 .nav-links {
@@ -95,13 +96,26 @@ const logout = function () {
 .nav-links li a:hover {
   color: #ffebf1;
   font-weight: 700;
-  /* 호버 시 글씨 두께 증가 */
 }
 
 .user-menu {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white; /* 프로필 이미지의 테두리를 흰색으로 추가 */
 }
 
 .login-btn,

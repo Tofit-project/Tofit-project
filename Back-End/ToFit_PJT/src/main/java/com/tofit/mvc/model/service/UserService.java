@@ -1,11 +1,13 @@
 package com.tofit.mvc.model.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.tofit.mvc.model.dto.User;
 
 public interface UserService {
 
 	// 회원가입
-	public boolean registerUser(User user);
+	public boolean registerUser(User user,  MultipartFile file);
 
 	// 아이디 중복 확인
 	public boolean checkUserId(String id);

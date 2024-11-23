@@ -19,7 +19,7 @@ import com.tofit.mvc.model.dto.Follows;
 import com.tofit.mvc.model.service.FollowsService;
 
 @RestController
-@RequestMapping("/follows")
+@RequestMapping("tofit/follows")
 @CrossOrigin("*")
 public class FollowsRestController {
 

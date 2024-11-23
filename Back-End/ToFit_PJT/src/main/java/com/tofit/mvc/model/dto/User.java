@@ -10,11 +10,14 @@ public class User {
 	private Date birth;
 	private String profileName;
 	private String profileImg;
-	private String loginType;
+	private int loginType;
 	private Date regDate;
 	
+	public User() {
+	}
+
 	public User(String userId, String password, String email, String gender, Date birth, String profileName,
-			String profileImg, String loginType, Date regDate) {
+			String profileImg, int loginType, Date regDate) {
 		this.userId = userId;
 		this.password = password;
 		this.email = email;
@@ -82,11 +85,11 @@ public class User {
 		this.profileImg = profileImg;
 	}
 
-	public String getLoginType() {
+	public int getLoginType() {
 		return loginType;
 	}
 
-	public void setLoginType(String loginType) {
+	public void setLoginType(int loginType) {
 		this.loginType = loginType;
 	}
 
@@ -104,5 +107,7 @@ public class User {
 				+ ", birth=" + birth + ", profileName=" + profileName + ", profileImg=" + profileImg + ", loginType="
 				+ loginType + ", regDate=" + regDate + "]";
 	}
-
+	
+	
+	
 }
