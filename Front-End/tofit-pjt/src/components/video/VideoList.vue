@@ -1,7 +1,10 @@
 <template>
   <div class="main-page">
-    <section class="recommended-section">
-      <h4>추천 운동 목록</h4>
+    <section
+      class="recommended-section"
+      v-if="userStore.loginUserProfileName !== null"
+    >
+      <h4>{{ userStore.loginUserProfileName }}님을 위한 추천 운동</h4>
       <div class="card-container">
         <div
           class="card"
@@ -33,6 +36,7 @@
           type="text"
           v-model="searchInfo.keyWord"
           placeholder="영상제목 또는 강사명을 입력해주세요"
+          @keyup.enter="searchVideoList"
           class="search-bar"
         />
         <button class="search-btn" @click="searchVideoList">검색</button>
@@ -73,8 +77,10 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useVideoStore } from "@/stores/video";
+import { useUserStore } from "@/stores/user";
 
 const store = useVideoStore();
+const userStore = useUserStore();
 
 const searchInfo = ref({
   keyWord: "",

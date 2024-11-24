@@ -39,6 +39,17 @@ public class SpecialistRestController {
         
     }
     
+    // 전문가 비디오 리스트
+    @GetMapping("/video")
+    public ResponseEntity<?> videoList(){
+       List<SpecialistInfoView> list = specialistService.getVideoInfo();
+       
+       if(list == null || list.size() == 0)
+          return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+       
+       return new ResponseEntity<List<SpecialistInfoView>>(list, HttpStatus.OK);
+    }
+    
     // 전문가 상세 조회 (해당 전문가가 올린 모든 콘텐츠들)
     @GetMapping("/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") String specialistId){

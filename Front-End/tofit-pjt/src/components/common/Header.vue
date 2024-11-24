@@ -15,8 +15,8 @@
         <li>
           <RouterLink :to="{ name: 'specialistList' }">Instructor</RouterLink>
         </li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about">Community</a></li>
+        <li><a href="#contact">Daily</a></li>
       </ul>
       <div class="user-menu">
         <!-- 로그인 상태 -->
@@ -49,6 +49,10 @@ import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
+
+// onMounted(() => {
+//   userStore.checkLoginStatus();
+// });
 
 const logout = function () {
   userStore.userLogout();

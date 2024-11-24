@@ -91,8 +91,8 @@ export const useUserStore = defineStore("user", () => {
   };
 
   // 페이지 로드 시 로그인 상태 확인
+  const token = sessionStorage.getItem("access-token");
   const checkLoginStatus = function () {
-    const token = sessionStorage.getItem("access-token");
     if (token) {
       const payload = JSON.parse(atob(token.split(".")[1]));
       loginUserId.value = payload["userId"];
@@ -113,5 +113,6 @@ export const useUserStore = defineStore("user", () => {
     userLogout,
     checkLoginStatus,
     loginUserProfileImage,
+    token,
   };
 });

@@ -1,47 +1,52 @@
 <template>
-    <div>
-        <div class="video-detail">
-    <!-- 동영상 iframe -->
-    <div class="video-container">
-      <iframe
-        :src="videoUrl"
-        frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-        class="video-frame"
-      ></iframe>
-    </div>
+  <div>
+    <div class="video-detail">
+      <!-- 동영상 iframe -->
+      <div class="video-container">
+        <iframe
+          :src="videoUrl"
+          frameborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          class="video-frame"
+        ></iframe>
+      </div>
 
-    <!-- 제목, 강사 이미지, 강사 채널명 -->
-    <div class="video-info">
-      <h5 class="video-title">{{ decode(store.video.title) }}
-        <button
-        @click="toggleFavorite"
-        class="favorite-btn"
-        :class="{favorite: isFavorite}">
-        <span class="heart-icon">{{isFavorite ? '❤️' : '🤍'}}</span>
-    </button>
-      </h5>
-      <div class="instructor-info">
-        <img
-          :src="store.video.profileImg"
-          alt="instructor"
-          class="instructor-img"
-        />
-        <p class="instructor-channel">{{ decode(store.video.channelName) }}</p>
+      <!-- 제목, 강사 이미지, 강사 채널명 -->
+      <div class="video-info">
+        <h5 class="video-title">
+          {{ decode(store.video.title) }}
+          <button @click="toggleFavorite" class="favorite-btn">
+            <span class="heart-icon">{{
+              favStore.favoriteInfo ? "❤️" : "🤍"
+            }}</span>
+          </button>
+        </h5>
+        <p>조회수 {{ store.video.viewCnt }}회</p>
+        <div class="instructor-info">
+          <img
+            :src="store.video.profileImg"
+            alt="instructor"
+            class="instructor-img"
+          />
+          <p class="instructor-channel">
+            {{ decode(store.video.channelName) }}
+          </p>
+        </div>
       </div>
     </div>
+    <RouterView />
   </div>
-        <RouterView/>
-    </div>
 </template>
 
 <script setup>
-import { useVideoStore } from '@/stores/video';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useVideoStore } from "@/stores/video";
+import { useFavoriteStore } from "@/stores/favorite";
+import { watch, computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const store = useVideoStore();
+const favStore = useFavoriteStore();
 const route = useRoute();
 
 // 동영상 URL을 iframe에서 사용할 수 있는 형태로 변환
@@ -50,21 +55,29 @@ const videoUrl = computed(() => {
 });
 
 // HTML 엔티티 변환 출력
-const decode = function(encodedStr){
-    const doc = new DOMParser().parseFromString(encodedStr, 'text/html');
-    return doc.documentElement.textContent;
-}
-
-// 찜
-const isFavorite = ref(false);
-
-const toggleFavorite = () => {
-    isFavorite.value = !isFavorite.value;
+const decode = function (encodedStr) {
+  const doc = new DOMParser().parseFromString(encodedStr, "text/html");
+  return doc.documentElement.textContent;
 };
 
-onMounted(()=>{
-    store.getVideo(route.params.videoId)
-})
+// 찜
+const isFavorite = ref(favStore.favoriteInfo.value);
+console.log(isFavorite.value);
+
+const toggleFavorite = () => {
+  if (!favStore.favoriteInfo) {
+    // 찜 등록
+    favStore.createFavorite(route.params.videoId);
+  } else {
+    // 찜 해제
+    favStore.removeFavorite(route.params.videoId);
+  }
+};
+
+onMounted(() => {
+  store.getVideo(route.params.videoId);
+  favStore.getFavoriteInfo(route.params.videoId);
+});
 </script>
 
 <style scoped>
@@ -104,13 +117,12 @@ onMounted(()=>{
 }
 
 .favorite-btn .heart-icon {
-    transition: color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
-
 .favorite-btn:hover .heart-icon {
-    transform: scale(1.3); /* hover 시 크기 증가 */
-    font-size: 2rem; /* 크기를 더 크게 설정 */
+  transform: scale(1.3); /* hover 시 크기 증가 */
+  font-size: 2rem; /* 크기를 더 크게 설정 */
 }
 
 .instructor-info {

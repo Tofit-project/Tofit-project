@@ -4,10 +4,10 @@ import com.tofit.mvc.model.dto.Favorites;
 
 public interface FavoritesDao {
 
-	int insertFav(Favorites fav);
+   int insertFav(Favorites fav);
 
-	int deleteFav(Favorites fav);
+   int deleteFav(Favorites fav);
 
-	Favorites selectFav(Favorites fav);
+   Favorites selectFav(Favorites fav);
 
 }

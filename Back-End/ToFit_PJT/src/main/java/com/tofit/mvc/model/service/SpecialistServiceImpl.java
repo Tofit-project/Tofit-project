@@ -25,10 +25,18 @@ public class SpecialistServiceImpl implements SpecialistService{
         return specialistDao.selectByCondition(condition);
     }
 
+    // 전문가가 올린 영상 정보 조회
+    @Override
+    public List<SpecialistInfoView> getVideoInfo() {
+       
+       return specialistDao.selectSpecialistVideo();
+    }
+    
     // 전문가 상세 조회
     @Override
     public List<SpecialistInfoView> getDetail(String specialistId) {
         return specialistDao.selectBySpecialistId(specialistId);
     }
+
 
 }

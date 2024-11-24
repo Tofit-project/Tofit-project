@@ -12,4 +12,6 @@ public interface SpecialistService {
 
     List<SpecialistInfoView> getDetail(String specialistId);
 
+   List<SpecialistInfoView> getVideoInfo();
+
 }

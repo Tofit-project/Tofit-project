@@ -12,6 +12,13 @@
         </if>
     </select>
     
+    <!-- 전문가가 올린 영상 정보 조회 -->
+    <select id="selectSpecialistVideo" resultType="SpecialistInfoView">
+       SELECT *
+      FROM specialist_info_view
+      ORDER BY channel_name, view_cnt desc;
+    </select>
+    
     <!-- 전문가 상세 조회 -->
     <select id="selectBySpecialistId" parameterType="String" resultType="SpecialistInfoView">
         SELECT *

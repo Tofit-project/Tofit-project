@@ -8,30 +8,30 @@ import com.tofit.mvc.model.dto.Favorites;
 @Service
 public class FavoritesServiceImpl implements FavoritesService{
 
-	private final FavoritesDao favoritesDao;
-	
-	public FavoritesServiceImpl(FavoritesDao favoritesDao) {
-		this.favoritesDao = favoritesDao;
-	}
+   private final FavoritesDao favoritesDao;
+   
+   public FavoritesServiceImpl(FavoritesDao favoritesDao) {
+      this.favoritesDao = favoritesDao;
+   }
 
-	// 찜 조회
-	@Override
-	public Favorites getFav(Favorites fav) {
-		return favoritesDao.selectFav(fav);
-	}
-	
-	// 찜 등록
-	@Override
-	public boolean doFav(Favorites fav) {
-		int result = favoritesDao.insertFav(fav);
-		return result == 1;
-	}
+   // 찜 조회
+   @Override
+   public Favorites getFav(Favorites fav) {
+      return favoritesDao.selectFav(fav);
+   }
+   
+   // 찜 등록
+   @Override
+   public boolean doFav(Favorites fav) {
+      int result = favoritesDao.insertFav(fav);
+      return result == 1;
+   }
 
-	// 찜 해제
-	@Override
-	public boolean undoFav(Favorites fav) {
-		int result = favoritesDao.deleteFav(fav);
-		return result == 1;
-	}
-	
+   // 찜 해제
+   @Override
+   public boolean undoFav(Favorites fav) {
+      int result = favoritesDao.deleteFav(fav);
+      return result == 1;
+   }
+   
 }
