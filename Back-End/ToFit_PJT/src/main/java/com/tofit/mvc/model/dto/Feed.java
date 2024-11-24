@@ -8,6 +8,9 @@ public class Feed {
 	private String content;
 	private Date regDate;
 	
+	public Feed() {
+	}
+	
 	public Feed(int feedId, String userId, String content, Date regDate) {
 		super();
 		this.feedId = feedId;

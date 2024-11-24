@@ -5,12 +5,13 @@ import { useUserStore } from "./user";
 
 const REST_API_URL = `http://localhost:8080/tofit/video`;
 
-export const useFavoriteStore = defineStore("favorite", () => {
+export const useRecordStore = defineStore("record", () => {
   const userStore = useUserStore();
 
+  // 아래 수정해야 됨!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // 찜 목록 조회
-  const favoriteList = ref([]);
-  const getFavoriteList = async function () {
+  const recordList = ref([]);
+  const getRecordList = async function () {
     try {
       const response = await axios({
         url: `${REST_API_URL}/favoriteList`,
@@ -27,22 +28,8 @@ export const useFavoriteStore = defineStore("favorite", () => {
     }
   };
 
-  // 찜 상태 조회
-  const favoriteInfo = ref(false);
-  const getFavoriteInfo = function (videoId) {
-    axios({
-      url: `${REST_API_URL}/${videoId}/favorite`,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${userStore.token}`,
-      },
-    }).then((response) => {
-      favoriteInfo.value = response.data;
-    });
-  };
-
   // 찜 등록
-  const createFavorite = function (videoId) {
+  const addRecord = function (videoId) {
     axios({
       url: `${REST_API_URL}/${videoId}/favorite`,
       method: "POST",
@@ -67,12 +54,5 @@ export const useFavoriteStore = defineStore("favorite", () => {
     });
   };
 
-  return {
-    favoriteList,
-    getFavoriteList,
-    getFavoriteInfo,
-    favoriteInfo,
-    createFavorite,
-    removeFavorite,
-  };
+  return {};
 });

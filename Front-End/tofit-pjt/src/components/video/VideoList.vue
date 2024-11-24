@@ -124,6 +124,7 @@ const decode = function (encodedStr) {
 onMounted(() => {
   store.getRecomVideoList();
   searchVideoList();
+  userStore.checkLoginStatus();
 });
 </script>
 

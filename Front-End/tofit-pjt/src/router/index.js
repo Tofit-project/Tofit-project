@@ -8,6 +8,13 @@ import SpecialistList from "@/components/specialist/SpecialistList.vue";
 import UserLogin from "@/components/user/UserLogin.vue";
 import SpecialistDetail from "@/components/specialist/SpecialistDetail.vue";
 import UserSignup from "@/components/user/UserSignup.vue";
+import FeedList from "@/components/feed/FeedList.vue";
+import FeedView from "@/views/FeedView.vue";
+import UserView from "@/views/UserView.vue";
+import UserDetail from "@/components/user/UserDetail.vue";
+import FeedCreate from "@/components/feed/FeedCreate.vue";
+import RecordView from "@/views/RecordView.vue";
+import RecordRegist from "@/components/record/RecordRegist.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +63,35 @@ const router = createRouter({
       ],
     },
     {
+      path: "/mypage",
+      name: "mypage",
+      component: UserView,
+      children: [
+        {
+          path: "",
+          name: "userDetail",
+          component: UserDetail,
+        },
+      ],
+    },
+    {
+      path: "/feed",
+      name: "feed",
+      component: FeedView,
+      children: [
+        {
+          path: "",
+          name: "feedList",
+          component: FeedList,
+        },
+        {
+          path: "write",
+          name: "feedCreate",
+          component: FeedCreate,
+        },
+      ],
+    },
+    {
       path: "/login",
       name: "login",
       component: UserLogin,
@@ -64,6 +100,18 @@ const router = createRouter({
       path: "/signup",
       name: "signup",
       component: UserSignup,
+    },
+    {
+      path: "/daily",
+      name: "record",
+      component: RecordView,
+      children: [
+        {
+          path: "",
+          name: "calendar",
+          component: RecordRegist,
+        },
+      ],
     },
   ],
 });

@@ -5,6 +5,9 @@ public class FeedImage {
 	private int feedId;
 	private String img;
 	
+	public FeedImage() {
+	}
+	
 	public FeedImage(int imageId, int feedId, String img) {
 		super();
 		this.imageId = imageId;

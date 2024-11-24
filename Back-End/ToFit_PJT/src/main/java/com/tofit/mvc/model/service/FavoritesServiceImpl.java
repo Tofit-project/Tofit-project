@@ -1,9 +1,12 @@
 package com.tofit.mvc.model.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.tofit.mvc.model.dao.FavoritesDao;
 import com.tofit.mvc.model.dto.Favorites;
+import com.tofit.mvc.model.dto.FavoritesView;
 
 @Service
 public class FavoritesServiceImpl implements FavoritesService{
@@ -33,5 +36,10 @@ public class FavoritesServiceImpl implements FavoritesService{
       int result = favoritesDao.deleteFav(fav);
       return result == 1;
    }
+
+@Override
+public List<FavoritesView> getList(String userId) {
+   return favoritesDao.selectList(userId);
+}
    
 }

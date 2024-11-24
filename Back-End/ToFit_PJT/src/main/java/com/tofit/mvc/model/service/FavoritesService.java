@@ -1,6 +1,9 @@
 package com.tofit.mvc.model.service;
 
+import java.util.List;
+
 import com.tofit.mvc.model.dto.Favorites;
+import com.tofit.mvc.model.dto.FavoritesView;
 
 public interface FavoritesService {
 
@@ -10,5 +13,6 @@ public interface FavoritesService {
 
    Favorites getFav(Favorites fav);
 
+   List<FavoritesView> getList(String userId);
 
 }

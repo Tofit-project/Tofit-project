@@ -11,7 +11,7 @@ export const useVideoStore = defineStore("video", () => {
   // 추천 영상 목록
   const recomVideoList = ref([]);
   const getRecomVideoList = function () {
-    if (userStore.token) {
+    if (userStore.token !== null) {
       axios({
         url: `${REST_API_URL}/recom`,
         method: "GET",

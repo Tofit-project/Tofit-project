@@ -10,30 +10,66 @@
       </div>
       <ul class="nav-links">
         <li>
-          <RouterLink :to="{ name: 'videoList' }">Excercise</RouterLink>
+          <RouterLink :to="{ name: 'videoList' }">Exercise</RouterLink>
         </li>
         <li>
           <RouterLink :to="{ name: 'specialistList' }">Instructor</RouterLink>
         </li>
         <li><a href="#about">Community</a></li>
-        <li><a href="#contact">Daily</a></li>
+        <li><RouterLink :to="{ name: 'calendar' }">Daily</RouterLink></li>
       </ul>
       <div class="user-menu">
         <!-- 로그인 상태 -->
-        <div v-if="userStore.loginUserProfileName" class="user-info">
-          <div v-if="userStore.loginUserProfileImage">
-            <img :src="userStore.loginUserProfileImage" class="profile-image" />
+        <div
+          v-if="userStore.loginUserProfileName"
+          class="user-info d-flex align-items-center gap-2"
+        >
+          <div
+            class="profile-dropdown-container d-flex align-items-center gap-2"
+            @mouseover="openDropdown"
+            @mouseleave="closeDropdown"
+          >
+            <div
+              v-if="userStore.loginUserProfileImage"
+              class="profile-image-container"
+            >
+              <img
+                :src="userStore.loginUserProfileImage"
+                class="profile-image"
+              />
+              <span> {{ userStore.loginUserProfileName }}</span>
+            </div>
+            <div v-else class="profile-image-container">
+              <img src="/images/default_profile.png" class="profile-image" />
+              <span> {{ userStore.loginUserProfileName }}</span>
+            </div>
+            <span class="dropdown-toggle"></span>
+            <ul class="dropdown-menu" v-show="isDropdownOpen">
+              <li class="dropdown-header">
+                {{ userStore.loginUserProfileName }}님 환영합니다.
+              </li>
+              <li>
+                <RouterLink :to="{ name: 'userDetail' }" class="dropdown-item"
+                  ><span>마이페이지</span></RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink :to="{ name: 'feedList' }" class="dropdown-item"
+                  ><span>피드 관리</span></RouterLink
+                >
+              </li>
+              <li><span class="dropdown-item">My 운동</span></li>
+              <li>
+                <button class="dropdown-item" @click="logout">로그아웃</button>
+              </li>
+            </ul>
           </div>
-          <div v-else>
-            <img src="/images/default_profile.png" class="profile-image" />
-          </div>
-          <span>{{ userStore.loginUserProfileName }}님 환영합니다.</span>
-          <button @click="logout">로그아웃</button>
         </div>
+
         <!-- 로그인 상태가 아닐 때 -->
         <div v-else>
           <RouterLink :to="{ name: 'login' }">
-            <button class="login-btn">로그인</button>
+            <button class="login-btn me-2">로그인</button>
           </RouterLink>
           <RouterLink :to="{ name: 'signup' }">
             <button class="signup-btn">회원가입</button>
@@ -45,14 +81,23 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 
 const userStore = useUserStore();
+const isDropdownOpen = ref(false);
 
-// onMounted(() => {
-//   userStore.checkLoginStatus();
-// });
+onMounted(() => {
+  userStore.checkLoginStatus();
+});
+
+const openDropdown = () => {
+  isDropdownOpen.value = true;
+};
+
+const closeDropdown = () => {
+  isDropdownOpen.value = false;
+};
 
 const logout = function () {
   userStore.userLogout();
@@ -60,11 +105,12 @@ const logout = function () {
 </script>
 
 <style scoped>
+/* 공통 스타일 */
 .header-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ff848f;
+  background-color: #f26465;
   color: white;
   padding: 0 2rem;
   height: 80px;
@@ -105,13 +151,23 @@ const logout = function () {
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem; /* 프로필 이미지와 드롭다운 사이의 간격 */
+}
+
+.profile-dropdown-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-image-container {
+  display: flex;
+  align-items: center;
 }
 
 .profile-image {
@@ -119,7 +175,57 @@ const logout = function () {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white; /* 프로필 이미지의 테두리를 흰색으로 추가 */
+  border: 2px solid white;
+  margin-right: 5px;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 63px;
+  right: 0;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* 기본적으로 숨기기 */
+  z-index: 1000; /* 드롭다운 메뉴가 다른 요소 위로 오도록 */
+}
+
+.dropdown-menu .dropdown-item {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  color: #333;
+  cursor: pointer;
+  text-decoration-line: none;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #ff848f;
+}
+
+.dropdown-header {
+  font-weight: bold;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #0a0a0a;
+  border-bottom: 1px solid #ddd;
+}
+
+/* 드롭다운 hover 시 표시 */
+.dropdown-menu {
+  display: block;
 }
 
 .login-btn,

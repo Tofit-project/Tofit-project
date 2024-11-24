@@ -3,13 +3,15 @@ package com.tofit.mvc.model.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.tofit.mvc.model.dto.Feed;
 import com.tofit.mvc.model.dto.FeedImage;
 
 public interface FeedService {
 	
 	// 피드 작성
-	public boolean registerFeed(Feed feed, List<FeedImage> feedImages);
+	public boolean registerFeed(Feed feed, List<MultipartFile> files);
 	
 	// 전체 피드와 피드별 이미지들 조회
 	public List<Map<String, Object>> getFeedList();

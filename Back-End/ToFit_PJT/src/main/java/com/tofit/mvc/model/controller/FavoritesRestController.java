@@ -1,5 +1,7 @@
 package com.tofit.mvc.model.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,10 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tofit.mvc.jwt.JwtUtil;
 import com.tofit.mvc.model.dto.Favorites;
+import com.tofit.mvc.model.dto.FavoritesView;
 import com.tofit.mvc.model.service.FavoritesService;
 
 @RestController
-@RequestMapping("/tofit/video/{videoId}/favorite")
+@RequestMapping("/tofit/video")
 @CrossOrigin("*")
 public class FavoritesRestController {
 
@@ -27,9 +30,22 @@ public class FavoritesRestController {
       this.favoritesService = favoritesService;
       this.jwtUtil = jwtUtil;
    }
+   
+   @GetMapping("/favoriteList")
+   public ResponseEntity<?> list(@RequestHeader(value = "Authorization") String token){
+      token = token.replace("Bearer ", "");
+      String userId = jwtUtil.getUserIdFromToken(token);
+      
+      List<FavoritesView> list = favoritesService.getList(userId);
+      
+      if(list == null || list.size() == 0)
+         return new ResponseEntity<String>("찜 목록이 없습니다", HttpStatus.NO_CONTENT);
+      
+      return new ResponseEntity<List<FavoritesView>>(list, HttpStatus.OK);
+   }
 
    // 찜 조회
-   @GetMapping()
+   @GetMapping("/{videoId}/favorite")
    public ResponseEntity<Boolean> detail(@PathVariable("videoId") String videoId, @RequestHeader(value = "Authorization") String token){
       token = token.replace("Bearer ", "");
       String userId = jwtUtil.getUserIdFromToken(token);
@@ -47,7 +63,7 @@ public class FavoritesRestController {
    }
    
    // 찜 등록
-   @PostMapping()
+   @PostMapping("/{videoId}/favorite")
    public ResponseEntity<?> create(@PathVariable("videoId") String videoId, @RequestHeader(value = "Authorization") String token){
       token = token.replace("Bearer ", "");
       String userId = jwtUtil.getUserIdFromToken(token);
@@ -64,7 +80,7 @@ public class FavoritesRestController {
    }
    
    // 찜 삭제
-   @DeleteMapping()
+   @DeleteMapping("/{videoId}/favorite")
    public ResponseEntity<?> remove(@PathVariable("videoId") String videoId, @RequestHeader(value = "Authorization") String token){
       token = token.replace("Bearer ", "");
       String userId = jwtUtil.getUserIdFromToken(token);
