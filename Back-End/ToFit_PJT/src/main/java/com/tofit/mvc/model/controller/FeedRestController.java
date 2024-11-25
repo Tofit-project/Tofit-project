@@ -74,22 +74,30 @@ public class FeedRestController {
 
 	// 특정 사용자의 모든 피드와 피드별 이미지들 조회
 	@GetMapping("/user")
-	public ResponseEntity<?> getMyFeedList(@RequestHeader("Authorization") String authHeader) {
+	public ResponseEntity<?> getMyFeedList(@RequestHeader("Authorization") String authHeader,
+			@RequestParam(required = false) String userId) {
+		
 		String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
 		List<Map<String, Object>> res = new ArrayList<>();
 
 		if (token != null) {
-			String userId = jwtUtil.getUserIdFromToken(token);
+			String  extractedUserId = jwtUtil.getUserIdFromToken(token);
 
-			if (userId != null) {
-				res = feedService.getFeedListByUserId(userId);
-				return ResponseEntity.status(HttpStatus.OK).body(res);
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("피드 정보 없음");
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 없음");
-		}
+			if (extractedUserId != null) {
+	            if (userId != null) {
+	                // 쿼리 파라미터로 받은 userId가 있다면 해당 사용자 피드를 조회
+	                res = feedService.getFeedListByUserId(userId);
+	            } else {
+	                // userId가 없으면 현재 로그인된 사용자의 피드 조회
+	                res = feedService.getFeedListByUserId(extractedUserId);
+	            }
+	            return ResponseEntity.status(HttpStatus.OK).body(res);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효하지 않은 토큰입니다.");
+	        }
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("JWT 없음");
+	    }
 
 	}
 

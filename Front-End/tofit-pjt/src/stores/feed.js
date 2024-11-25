@@ -39,57 +39,36 @@ export const useFeedStore = defineStore("feed", () => {
 
   // 특정인의 피드리스트 전체 조회
   const myFeedList = ref([]);
-  const getMyFeedList = function () {
+  const getUserFeedList = function (userId = null) {
+    // userId값이 함수 호출 시 전달되지 않으면 null 값을 기본값으로 사용한다는 의미
     const token = sessionStorage.getItem("access-token");
+    let url = `${REST_API_URL}/user`; // 기본 URL은 로그인한 사용자의 피드
+    let params = {};
+
+    if (userId) {
+      // userId가 전달되면 해당 사용자의 피드를 가져오기 위한 쿼리 파라미터 설정
+      params = { userId: userId };
+    }
 
     axios
-      .get(`${REST_API_URL}/user`, {
+      .get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: params, // 쿼리 파라미터로 userId 전달
       })
       .then((res) => {
-        console.log(res);
-        myFeedList.value = res.data;
+        myFeedList.value = res.data; // 응답받은 피드 리스트를 저장
       })
       .catch(() => {
         alert("피드 리스트를 가져오는데 실패했습니다.");
       });
   };
 
-  // 수정!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // const getFeedList = function (userId = null) {
-  //   const token = sessionStorage.getItem("access-token");
-
-  //   let url = `${REST_API_URL}/user`;  // 기본 URL은 로그인한 사용자의 피드
-  //   let params = {};
-
-  //   if (userId) {
-  //     // 타인 사용자의 피드일 경우, userId를 쿼리 파라미터로 전달
-  //     params = { userId: userId };
-  //   }
-
-  //   axios
-  //     .get(url, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       params: params,  // 쿼리 파라미터로 userId 전달
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       myFeedList.value = res.data;  // 피드 리스트를 받아와서 저장
-  //     })
-  //     .catch(() => {
-  //       alert("피드 리스트를 가져오는데 실패했습니다.");
-  //     });
-  // };
-  ////////////////////////////////////////////////////////////////////////  
-
   // 특정인의 피드 삭제
   const feedDelete = function (feedId) {
     const token = sessionStorage.getItem("access-token");
-    console.log(feedId)
+    console.log(feedId);
 
     axios
       .delete(`${REST_API_URL}/user/${feedId}`, {
@@ -98,7 +77,7 @@ export const useFeedStore = defineStore("feed", () => {
         },
       })
       .then(() => {
-        alert("피드 삭제 완료")
+        alert("피드 삭제 완료");
         getMyFeedList();
       })
       .catch(() => {
@@ -109,7 +88,6 @@ export const useFeedStore = defineStore("feed", () => {
   // 피드리스트 전체 조회
   const feedAllList = ref([]);
   const getFeedList = function () {
-
     axios
       .get(REST_API_URL)
       .then((res) => {
@@ -123,7 +101,7 @@ export const useFeedStore = defineStore("feed", () => {
 
   return {
     writeFeed,
-    getMyFeedList,
+    getUserFeedList,
     myFeedList,
     feedDelete,
     feedAllList,

@@ -8,7 +8,14 @@
         @click="openModal(feed)"
       >
         <div class="feed-header">
-          <img :src="feed.profileImg" alt="Profile Image" class="profile-img" />
+          <!-- 프로필 이미지 클릭 시 해당 사용자 ID로 이동 -->
+          <router-link :to="'/feed/' + feed.feed.userId">
+            <img
+              :src="feed.profileImg"
+              alt="Profile Image"
+              class="profile-img"
+            />
+          </router-link>
           <p class="profile-name">{{ feed.profileName }}</p>
         </div>
         <div class="feed-content">

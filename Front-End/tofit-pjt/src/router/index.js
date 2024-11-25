@@ -82,9 +82,10 @@ const router = createRouter({
       component: FeedView,
       children: [
         {
-          path: "",
+          path: ":userId?", // userId는 선택적 파라미터
           name: "feedList",
           component: FeedList,
+          props: true,
         },
         {
           path: "write",

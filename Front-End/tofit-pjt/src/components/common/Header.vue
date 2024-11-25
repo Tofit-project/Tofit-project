@@ -15,7 +15,9 @@
         <li>
           <RouterLink :to="{ name: 'specialistList' }">Instructor</RouterLink>
         </li>
-        <li><RouterLink :to="{ name: 'feedAllList' }">Community</RouterLink></li>
+        <li>
+          <RouterLink :to="{ name: 'feedAllList' }">Community</RouterLink>
+        </li>
         <li><RouterLink :to="{ name: 'calendar' }">Daily</RouterLink></li>
       </ul>
       <div class="user-menu">

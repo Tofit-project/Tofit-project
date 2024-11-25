@@ -1,7 +1,13 @@
 <template>
   <div class="feed-page">
     <header class="page-header">
-      <h1 class="page-title">OO의 피드 홈</h1>
+      <h1 class="page-title">
+        {{
+          feedStore.myFeedList.length > 0
+            ? feedStore.myFeedList[0]?.profileName
+            : "사용자"
+        }}의 피드 홈
+      </h1>
       <p class="page-subtitle">피드를 작성하고 관리해보세요.</p>
     </header>
     <RouterLink :to="{ name: 'feedCreate' }">
@@ -41,7 +47,11 @@
       <div class="modal-content">
         <button class="close-modal" @click="closeFeedDetail">x</button>
 
-        <img :src="selectedFeed.profileImg" alt="Profile Image" class="profile-img" />
+        <img
+          :src="selectedFeed.profileImg"
+          alt="Profile Image"
+          class="profile-img"
+        />
         <p class="profile-name">{{ selectedFeed.profileName }}</p>
 
         <div v-if="selectedFeed.images.length > 0" class="modal-images">
@@ -50,7 +60,7 @@
             <img
               :src="selectedFeed.images[currentImageIndex].img"
               alt="피드 이미지!"
-              style="border-radius: 5px;"
+              style="border-radius: 5px"
             />
           </div>
           <button class="arrow right" @click="nextImage">></button>
@@ -61,7 +71,12 @@
 
         <div class="modal-actions">
           <button class="modal-button edit-button">수정</button>
-          <button class="modal-button delete-button" @click="deleteFeed(selectedFeed.feed.feedId)">삭제</button>
+          <button
+            class="modal-button delete-button"
+            @click="deleteFeed(selectedFeed.feed.feedId)"
+          >
+            삭제
+          </button>
         </div>
       </div>
     </div>
@@ -69,20 +84,34 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { useFeedStore } from "@/stores/feed";
+import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
 const feedStore = useFeedStore();
+const route = useRoute();
+
 const selectedFeed = ref(null);
 const currentImageIndex = ref(0);
 
-onMounted(() => {
-  userStore.checkLoginStatus();
-  feedStore.getMyFeedList();
-});
+// route.params.userId가 변경될 때마다 추적
+watch(
+  () => route.params.userId,
+  (newUserId) => {
+    userStore.checkLoginStatus();
+    feedStore.getUserFeedList(newUserId);
+  },
+  { immediate: true }
+);
+
+// onMounted(() => {
+//   userStore.checkLoginStatus();
+//   const userId = route.params.userId;
+//   feedStore.getUserFeedList(userId);
+// });
 
 const openFeedDetail = (feed) => {
   selectedFeed.value = feed;
@@ -108,7 +137,6 @@ const deleteFeed = (feedId) => {
   feedStore.feedDelete(feedId);
   closeFeedDetail();
 };
-
 </script>
 
 <style scoped>
@@ -196,11 +224,10 @@ const deleteFeed = (feedId) => {
 }
 
 .profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-  }
-  
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 
 /* 모달 배경 */
 .modal-background {
