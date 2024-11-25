@@ -15,6 +15,8 @@ import UserDetail from "@/components/user/UserDetail.vue";
 import FeedCreate from "@/components/feed/FeedCreate.vue";
 import RecordView from "@/views/RecordView.vue";
 import RecordRegist from "@/components/record/RecordRegist.vue";
+import CommunityView from "@/views/CommunityView.vue";
+import FeedAllList from "@/components/feed/FeedAllList.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,6 +112,18 @@ const router = createRouter({
           path: "",
           name: "calendar",
           component: RecordRegist,
+        },
+      ],
+    },
+    {
+      path: "/community",
+      name: "community",
+      component: CommunityView,
+      children: [
+        {
+          path: "",
+          name: "feedAllList",
+          component: FeedAllList,
         },
       ],
     },

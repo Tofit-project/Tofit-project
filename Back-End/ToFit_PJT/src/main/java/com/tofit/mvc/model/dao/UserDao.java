@@ -1,5 +1,7 @@
 package com.tofit.mvc.model.dao;
 
+import java.util.Map;
+
 import com.tofit.mvc.model.dto.User;
 
 public interface UserDao {
@@ -30,5 +32,8 @@ public interface UserDao {
 	
 	// 회원 탈퇴
 	public int deleteUserOne(String id);
+	
+	// 회원 프로필정보(프로필명 ,프로필이미지) 조회 - Feed getFeedList()에 사용
+	public Map<String, Object> selectProfileInfo(String id);
 
 }

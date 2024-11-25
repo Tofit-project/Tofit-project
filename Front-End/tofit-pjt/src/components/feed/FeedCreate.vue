@@ -28,14 +28,20 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useFeedStore } from "@/stores/feed";
+import { useUserStore } from "@/stores/user";
 
 const feedStore = useFeedStore();
 const feed = ref({
   content: "",
   images: [],
 });
+
+const userStore = useUserStore();
+onMounted(()=>{
+  userStore.checkLoginStatus();
+})
 
 const previewImages = ref([]);
 

@@ -11,7 +11,7 @@
 	
 	<!-- 전체 피드 조회 -->
 	<select id="selectFeedList" resultType="Feed">
-		SELECT * FROM FEED
+		SELECT * FROM FEED ORDER BY reg_date DESC
 	</select>
 	
 	<!-- 사용자의 모든 피드 조회 -->

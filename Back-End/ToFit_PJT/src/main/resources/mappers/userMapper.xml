@@ -51,4 +51,9 @@
 		DELETE FROM USER WHERE user_id = #{userId}
 	</delete>	
 	
+	<!-- 회원 프로필정보 조회 (Feed에서 사용) -->
+	<select id="selectProfileInfo" parameterType="String" resultType="map">
+		SELECT profile_name, profile_img FROM USER WHERE user_id = #{userId}
+	</select>
+	
 </mapper>

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.tofit.mvc.model.dao.FeedDao;
 import com.tofit.mvc.model.dao.FeedImageDao;
+import com.tofit.mvc.model.dao.UserDao;
 import com.tofit.mvc.model.dto.Feed;
 import com.tofit.mvc.model.dto.FeedImage;
 
@@ -23,13 +25,15 @@ import com.tofit.mvc.model.dto.FeedImage;
 public class FeedServiceImpl implements FeedService {
 
 	private final FeedDao feedDao;
+	private final UserDao userDao;
 	private final FeedImageDao feedImageDao;
 	private final AmazonS3Client amazonS3Client;
 	private final String bucket;
 
-	public FeedServiceImpl(FeedDao feedDao, FeedImageDao feedImageDao, AmazonS3Client amazonS3Client,
+	public FeedServiceImpl(FeedDao feedDao, UserDao userDao, FeedImageDao feedImageDao, AmazonS3Client amazonS3Client,
 			@Value("${cloud.aws.s3.bucket}") String bucket) {
 		this.feedDao = feedDao;
+		this.userDao = userDao;
 		this.feedImageDao = feedImageDao;
 		this.amazonS3Client = amazonS3Client;
 		this.bucket = bucket;
@@ -55,23 +59,22 @@ public class FeedServiceImpl implements FeedService {
 			try {
 				// s3에 업로드
 				String imageUrl = uploadFileToS3(file);
-				
+
 				// 피드 이미지 데이터 담기
 				FeedImage feedImage = new FeedImage();
-				feedImage.setFeedId(feed.getFeedId()); 
+				feedImage.setFeedId(feed.getFeedId());
 				feedImage.setImg(imageUrl);
 				return feedImage;
 			} catch (IOException e) {
 				throw new RuntimeException("파일 업로드 실패", e);
 			}
 		}).toList();
-		
-		
+
 		// 피드 이미지 db에 저장
-		if(!feedImages.isEmpty()) {
+		if (!feedImages.isEmpty()) {
 			int res = feedImageDao.insertFeedImages(feedImages);
-			if(res != feedImages.size()) {
-				 throw new RuntimeException("FeedImage 저장 실패");
+			if (res != feedImages.size()) {
+				throw new RuntimeException("FeedImage 저장 실패");
 			}
 		}
 		return true;
@@ -112,9 +115,13 @@ public class FeedServiceImpl implements FeedService {
 				}
 			}
 
+			Map<String, Object> userInfo = userDao.selectProfileInfo(feed.getUserId());
+
 			Map<String, Object> feedWithImages = new HashMap<>();
 			feedWithImages.put("feed", feed);
 			feedWithImages.put("images", imagesFromFeed);
+			feedWithImages.put("profileName", userInfo.get("profile_name"));
+			feedWithImages.put("profileImg", userInfo.get("profile_img"));
 
 			res.add(feedWithImages);
 		}
@@ -132,10 +139,13 @@ public class FeedServiceImpl implements FeedService {
 		for (Feed feed : feedList) {
 
 			List<FeedImage> feedImageList = feedImageDao.selectFeedImagesByFeedId(feed.getFeedId());
-			
+			Map<String, Object> userInfo = userDao.selectProfileInfo(userId);
+
 			Map<String, Object> feedWithImages = new HashMap<>();
 			feedWithImages.put("feed", feed);
 			feedWithImages.put("images", feedImageList);
+			feedWithImages.put("profileName", userInfo.get("profile_name"));
+			feedWithImages.put("profileImg", userInfo.get("profile_img"));
 
 			res.add(feedWithImages);
 		}
@@ -180,11 +190,48 @@ public class FeedServiceImpl implements FeedService {
 	}
 
 	// 피드 삭제
+	@Transactional
 	@Override
 	public boolean deleteFeedInfo(int feedId, String userId) {
+
+		// id에 해당하는 feed 있는지 확인하고
 		Feed exist = feedDao.selectFeedOne(feedId);
-		if (exist.getUserId().equals(userId)) {
-			return feedDao.deleteFeedOne(feedId) > 0;
+
+		// 있으면 해당 feed 데이터 삭제(삭제 권한 -> 로그인한 사용자 확인)
+		if (exist != null && exist.getUserId().equals(userId)) {
+
+			// 그리고 해당하는 feedid에 대한 feedImage들이 있는지 확인하고
+			List<FeedImage> images = feedImageDao.selectFeedImagesByFeedId(feedId);
+			// 이미지들이 있으면 삭제
+			if (!images.isEmpty()) {
+				// db에서 삭제
+				boolean deleteSuccess = feedImageDao.deleteFeedImages(feedId) > 0;
+
+				// s3에서 삭제
+				if (deleteSuccess) {
+					for (FeedImage image : images) {
+						try {
+							String imgUrl = image.getImg();
+							String fileName = imgUrl.substring(imgUrl.lastIndexOf("/") + 1);
+
+							amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+
+						} catch (Exception e) {
+							throw new RuntimeException("S3에서 피드 이미지 삭제 실패", e);
+						}
+					}
+				} else {
+					throw new RuntimeException("피드 이미지 삭제 실패");
+				}
+			}
+
+			// 피드 삭제
+			int res = feedDao.deleteFeedOne(feedId);
+			if (res == 1) {
+				return true;
+			} else {
+				throw new RuntimeException("피드 삭제 실패");
+			}
 		}
 		return false;
 	}
