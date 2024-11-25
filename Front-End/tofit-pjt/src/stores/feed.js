@@ -48,6 +48,7 @@ export const useFeedStore = defineStore("feed", () => {
         },
       })
       .then((res) => {
+        console.log(res);
         myFeedList.value = res.data;
       })
       .catch(() => {

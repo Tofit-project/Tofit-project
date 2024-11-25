@@ -26,7 +26,7 @@
         >
           <div
             class="profile-dropdown-container d-flex align-items-center gap-2"
-            @mouseover="openDropdown"
+            @mouseenter="openDropdown"
             @mouseleave="closeDropdown"
           >
             <div
@@ -192,7 +192,7 @@ const logout = function () {
 
 .dropdown-menu {
   position: absolute;
-  top: 63px;
+  top: 60px;
   right: 0;
   background-color: white;
   color: black;

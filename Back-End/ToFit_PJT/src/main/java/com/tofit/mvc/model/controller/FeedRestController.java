@@ -73,7 +73,6 @@ public class FeedRestController {
 			 
 			 if(userId != null) {
 				 res = feedService.getFeedListByUserId(userId);
-				 System.out.println(res);
 				 return ResponseEntity.status(HttpStatus.OK).body(res);
 			 }else{
 				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("피드 정보 없음");
